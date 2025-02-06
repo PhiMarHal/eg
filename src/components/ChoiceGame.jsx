@@ -51,7 +51,6 @@ const ChoiceGame = () => {
         </svg>
     );
 
-
     const handleChoice = (chosenId) => {
         const chosenRef = chosenId === 1 ? block1Ref : block2Ref;
         const otherRef = chosenId === 1 ? block2Ref : block1Ref;
@@ -68,28 +67,28 @@ const ChoiceGame = () => {
             ease: 'power1.in'
         });
 
-        // Move chain and remaining block
+        // Move remaining block and chain right
         tl.to([chainWrapperRef.current, otherRef.current], {
-            x: viewportWidth,  // Move exactly one screen width
+            x: viewportWidth,
             duration: 2,
             ease: 'power1.inOut',
             onComplete: () => {
+                // Update dilemma
                 setCurrentDilemma((prev) => (prev + 1) % DILEMMAS.length);
 
-                // Reset chain position silently - it should be imperceptible because of the overflow
-                gsap.set(chainWrapperRef.current, { x: 0 });
-
-                // Reset and bring in new blocks
+                // Reset chain and blocks
+                gsap.set(chainWrapperRef.current, { x: -viewportWidth });
                 gsap.set([chosenRef.current, otherRef.current], {
-                    x: '-100vw',
+                    x: -viewportWidth,
                     y: 0,
                     rotation: 0
                 });
 
-                gsap.to([chosenRef.current, otherRef.current], {
+                // Move everything back in together
+                gsap.to([chainWrapperRef.current, chosenRef.current, otherRef.current], {
                     x: 0,
-                    duration: 0.5,
-                    ease: 'power1.out'
+                    duration: 2,
+                    ease: 'power1.inOut'
                 });
             }
         });
